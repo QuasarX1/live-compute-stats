@@ -1,0 +1,33 @@
+﻿<div>
+    <h3>
+        <a @onclick="update">
+            @*@System.DateTime.Now.ToString("HH:mm:ss dddd d MMMM yyyy")
+            <br />*@
+            @DisplayTime.ToString("HH:mm:ss") on @DisplayDate.ToString("dddd d MMMM yyyy")
+        </a>
+    </h3>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public uint UpdateSeconds { get; set; }
+
+    public TimeOnly DisplayTime { get; set; } = extractTime(DateTime.Now);
+    public DateOnly DisplayDate { get; set; } = extractDate(DateTime.Now);
+
+    private void update()
+    {
+        DisplayTime = extractTime(DateTime.Now);
+        DisplayDate = extractDate(DateTime.Now);
+    }
+
+    private static TimeOnly extractTime(DateTime t) { return new TimeOnly(t.Hour, t.Minute, t.Second); }
+    private static DateOnly extractDate(DateTime t) { return new DateOnly(t.Year, t.Month, t.Day); }
+
+    private Timer timer;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        timer = new Timer(new TimerCallback((object? state) => { update(); InvokeAsync(StateHasChanged); }), null, UpdateSeconds * 1000, UpdateSeconds * 1000);
+    }
+}
