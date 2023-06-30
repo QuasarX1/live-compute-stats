@@ -1,0 +1,20 @@
+{
+  "AllowedHosts": "*",
+  "StatusPollIntervalMinutes": 0.1,
+  "server_connections": {
+    "test_1": {
+      "hostname": "example1",
+      "displayname": "Example Server 1",
+      "username": "user_a",
+      "password": "password",
+      "has_slurm": false
+    },
+    "test_2": {
+      "hostname": "example2",
+      "displayname": "Example Server 2",
+      "username": "user_a",
+      "absolute_key_path": "C:\\Users\\user_a\\.ssh\\keyfile",
+      "has_slurm": true
+    }
+  }
+}

@@ -1,4 +1,7 @@
-﻿<div>
+﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
+
+<div>
     <h3>
         <a @onclick="update">
             @*@System.DateTime.Now.ToString("HH:mm:ss dddd d MMMM yyyy")
@@ -6,6 +9,9 @@
             @DisplayTime.ToString("HH:mm:ss") on @DisplayDate.ToString("dddd d MMMM yyyy")
         </a>
     </h3>
+</div>
+<div>
+    <p>@SelectedServerStatus.IsOnline</p>
 </div>
 
 @code {
@@ -25,6 +31,13 @@
     private static DateOnly extractDate(DateTime t) { return new DateOnly(t.Year, t.Month, t.Day); }
 
     private Timer timer;
+
+    public ServerStatus? SelectedServerStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedServerStatus = await serverStatusService.GetServerStatus("test");
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {

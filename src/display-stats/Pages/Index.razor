@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using display_stats.Data
+@inject IConfiguration Configuration
+@inject ServerStatusService serverStatusService
 
 <PageTitle>Index</PageTitle>
 
@@ -8,4 +11,18 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-<TestComponent UpdateSeconds=1 />
+@*<TestComponent UpdateSeconds=1 />*@
+
+@foreach (string server in serverStatusService.ServerNames)
+{
+    <ServerOnlineStatus ServerName=@server />
+}
+
+@code {
+    //private string[] servers;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+        
+    //}
+}

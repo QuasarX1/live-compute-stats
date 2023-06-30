@@ -1,0 +1,27 @@
+﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
+
+<div>
+    @if (status.IsOnline)
+    {
+        <h3>@info.DisplayName <span style="color: green"><span class="oi oi-circle-check" aria-hidden="true" /> Online</span></h3>
+    }
+    else
+    {
+        <h3>@info.DisplayName <span style="color: red"><span class="oi oi-circle-x" aria-hidden="true" /> Offline</span></h3>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string ServerName { get; set; }
+
+    private ServerInfo info;
+    private ServerStatus status;
+
+    protected override async Task OnInitializedAsync()
+    {
+        info = serverStatusService.GetServerInfo(ServerName);
+        status = await serverStatusService.GetServerStatus(ServerName);
+    }
+}

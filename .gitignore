@@ -396,4 +396,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+
+# Custom Ignores-------------------------------------------------------------------------------------------------------------------------------------------
+
+/src/display-stats/development.appsettings.json
 /src/display-stats/production.appsettings.json
