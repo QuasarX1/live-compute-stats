@@ -127,6 +127,8 @@ namespace display_stats.Data
                         return ServerStatus.Offline();
                     }
                 }
+
+                await Task.Delay(1000);
             }
 
             return statuses[server_name];

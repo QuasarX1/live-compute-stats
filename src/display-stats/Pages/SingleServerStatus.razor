@@ -1,0 +1,20 @@
+﻿@page "/details/{server}"
+@using display_stats.Data
+@inject IConfiguration Configuration
+@inject ServerStatusService serverStatusService
+
+<PageTitle>@info.DisplayName</PageTitle>
+
+<ServerStatusPannel ServerName=@Server />
+
+@code {
+    [Parameter]
+    public string Server { get; set; }
+
+    private ServerInfo info;
+
+    protected override async Task OnInitializedAsync()
+    {
+        info = serverStatusService.GetServerInfo(Server);
+    }
+}

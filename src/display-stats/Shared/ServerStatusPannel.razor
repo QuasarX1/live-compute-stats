@@ -1,0 +1,18 @@
+﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
+
+<ServerOnlineStatus ServerName=@ServerName />
+
+@code {
+    [Parameter, EditorRequired]
+    public string ServerName { get; set; }
+
+    private ServerInfo info;
+    private ServerStatus status;
+
+    protected override async Task OnInitializedAsync()
+    {
+        info = serverStatusService.GetServerInfo(ServerName);
+        status = await serverStatusService.GetServerStatus(ServerName);
+    }
+}

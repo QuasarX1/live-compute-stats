@@ -3,26 +3,13 @@
 @inject IConfiguration Configuration
 @inject ServerStatusService serverStatusService
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-@*<TestComponent UpdateSeconds=1 />*@
+<PageTitle>Status</PageTitle>
 
 @foreach (string server in serverStatusService.ServerNames)
 {
-    <ServerOnlineStatus ServerName=@server />
+    <ServerStatusPannel ServerName=@server />
 }
 
 @code {
-    //private string[] servers;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-        
-    //}
 }

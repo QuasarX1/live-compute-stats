@@ -1,20 +1,28 @@
 ﻿@using display_stats.Data
+@inject NavigationManager NavigationManager
 @inject ServerStatusService serverStatusService
 
-<div>
-    @if (status.IsOnline)
+<div style="border: 1px solid grey; border-radius: 10px; padding: 5px; background-color: lightgray; width: fit-content" onclick="@Navigate">
+    @if (status is null)
     {
-        <h3>@info.DisplayName <span style="color: green"><span class="oi oi-circle-check" aria-hidden="true" /> Online</span></h3>
+        <h3>@if (ShowLabel){@info.DisplayName}&nbsp;<span style="color: darkorange"><span class="oi oi-circle-check" aria-hidden="true" />&nbsp;Error</span></h3>
+    }
+    else if(status.IsOnline)
+    {
+        <h3>@if (ShowLabel){@info.DisplayName}&nbsp;<span style="color: green"><span class="oi oi-circle-check" aria-hidden="true" />&nbsp;Online</span></h3>
     }
     else
     {
-        <h3>@info.DisplayName <span style="color: red"><span class="oi oi-circle-x" aria-hidden="true" /> Offline</span></h3>
+        <h3>@if (ShowLabel){@info.DisplayName}&nbsp;<span style="color: red"><span class="oi oi-circle-x" aria-hidden="true" />&nbsp;Offline</span></h3>
     }
 </div>
 
 @code {
     [Parameter, EditorRequired]
     public string ServerName { get; set; }
+
+    [Parameter]
+    public bool ShowLabel { get; set; } = true;
 
     private ServerInfo info;
     private ServerStatus status;
@@ -23,5 +31,10 @@
     {
         info = serverStatusService.GetServerInfo(ServerName);
         status = await serverStatusService.GetServerStatus(ServerName);
+    }
+
+    private void Navigate()
+    {
+        NavigationManager.NavigateTo(String.Format("/details/{0}", ServerName));
     }
 }
