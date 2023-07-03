@@ -4,15 +4,11 @@
     {
         public bool IsOnline { get; private set; }
 
-        private ServerStatus()
+        public ServerStatus(bool online = false)
         {
-            IsOnline = false;
+            IsOnline = online;
         }
-        public static ServerStatus Offline() { return new ServerStatus(); }
 
-        public ServerStatus(string test)
-        {
-            IsOnline = true;
-        }
+        public static ServerStatus Offline() { return new ServerStatus(); }
     }
 }

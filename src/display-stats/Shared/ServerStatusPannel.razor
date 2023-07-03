@@ -1,7 +1,19 @@
 ﻿@using display_stats.Data
 @inject ServerStatusService serverStatusService
 
-<ServerOnlineStatus ServerName=@ServerName />
+<div style="display:flex; flex-direction: row;"><h1 style="margin-right: 1em">@info.DisplayName</h1><ServerOnlineStatus ServerName=@ServerName ShowLabel=@false /></div>
+
+@if (status is not null && status.IsOnline)
+{
+    if (info.HasSlurm)
+    {
+        <SlurmState Info=info Status="(SlurmServerStatus)status" />
+    }
+    else
+    {
+        <RegularState Info=info Status="(RegularServerStatus)status" />
+    }
+}
 
 @code {
     [Parameter, EditorRequired]

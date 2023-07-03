@@ -1,0 +1,35 @@
+﻿@using System.Drawing
+@using display_stats.Data
+
+<div stype="border: 1px solid black; border-radius: 5px; background-color: @Status.QueueColours.GetColour(job.QueueName)">
+    <h3>@job.Username @job.JobID</h3>
+    <p>@job.QueueName</p>
+    @if (job.IsStarted)
+    {
+        <p>@job.Elapsed.ToString()</p>
+    }
+    else
+    {
+        <p>-</p>
+    }
+    <p>(@job.MaxTime.ToString())</p>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public uint JobID { get; set; }
+
+    [Parameter, EditorRequired]
+    public ServerInfo Info { get; set; }
+
+    [Parameter, EditorRequired]
+    public SlurmServerStatus Status { get; set; }
+
+    private SlurmJobInfo job;
+
+    protected override async Task OnInitializedAsync()
+    {
+        job = Status.GetJob(JobID);
+    }
+    
+}

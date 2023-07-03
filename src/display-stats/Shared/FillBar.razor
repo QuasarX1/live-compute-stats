@@ -1,0 +1,133 @@
+﻿<div style="width: max-content; height: max-content; padding: 5px; @style">
+    <p style="margin: 0px; text-align: center">@fill_label</p>
+    <div style="height: @((Vertical) ? Length : Width)em;
+                width: @((Vertical) ? Width : Length)em;
+                background-color: @BackgroundColour;
+                padding: 0px;
+                border-radius: @(BorderRadius)px;
+    " >
+        @if (Percentage > 0.0f)
+        {
+            <div style="width: @((Vertical) ? 100 : Percentage)%;
+                        height: @((Vertical) ? Percentage : 100)%;
+                        background-color: @((Percentage >= DangerPercentageLimit) ? DangerColour : (Percentage >= WarningPercentageLimit) ? WarningColour : NormalColour);
+                        border-radius: @(BorderRadius)px;
+                        position: relative;
+                        left: @((InvertDirection && !Vertical) ? 100.0f - Percentage : 0)%;
+                        right: @((!InvertDirection && !Vertical) ? 100.0f - Percentage : 0)%;
+                        top: @((!InvertDirection && Vertical) ? 100.0f - Percentage : 0)%;
+                        bottom: @((InvertDirection && Vertical) ? 100.0f - Percentage : 0)%;
+            " />
+        }
+    </div>
+    @if (Label.Length > 0)
+    {
+        <p style="margin: 0px; text-align: center">
+            @foreach (string line in bar_label)
+            {
+                @line<br />
+            }
+        </p>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Any additional/alternitive styling for the outermost div.
+    /// </summary>
+    [Parameter]
+    public string style { get; set; } = "";
+
+    [Parameter]
+    public bool Vertical { get; set; } = false;
+    [Parameter]
+    public bool InvertDirection { get; set; } = false;
+
+    [Parameter]
+    public string BackgroundColour { get; set; } = "gray";
+    [Parameter]
+    public string NormalColour { get; set; } = "green";
+    /// <summary>
+    /// In em.
+    /// </summary>
+    [Parameter]
+    public int Width { get; set; } = 5;
+    /// <summary>
+    /// In em.
+    /// </summary>
+    [Parameter]
+    public int Length { get; set; } = 20;
+    [Parameter]
+    public int WarningPercentageLimit { get; set; } = 101;
+    [Parameter]
+    public string WarningColour { get; set; } = "darkorange";
+    [Parameter]
+    public int DangerPercentageLimit { get; set; } = 101;
+    [Parameter]
+    public string DangerColour { get; set; } = "red";
+
+    /// <summary>
+    /// In pixels.
+    /// </summary>
+    [Parameter]
+    public int BorderRadius { get; set; } = 0;
+
+    [Parameter]
+    public string Label { get; set; } = "";
+
+    [Parameter]
+    public float? Percentage { get; set; } = null;
+
+    [Parameter]
+    public uint? IntMax { get; set; } = null;
+
+    [Parameter]
+    public uint? IntValue { get; set; } = null;
+
+    [Parameter]
+    public float? FloatMax { get; set; } = null;
+
+    [Parameter]
+    public float? FloatValue { get; set; } = null;
+
+    [Parameter]
+    public uint DecimalPrecision { get; set; } = 2;
+
+    private string[] bar_label = new string[0];
+    private string fill_label = "--%";
+
+    protected override async Task OnInitializedAsync()
+    {
+        bar_label = Label.Split('\n', StringSplitOptions.None);
+
+        if (Percentage is null)
+        {
+            if (IntValue is not null)
+            {
+                if (IntMax is null)
+                {
+                    throw new ArgumentException("Only one Int... field was specified.");
+                }
+                Percentage = 100.0f * (float)IntValue / (float)IntMax;
+                fill_label = $"{IntValue}/{IntMax}";
+            }
+            else if (FloatValue is not null)
+            {
+                if (FloatMax is null)
+                {
+                    throw new ArgumentException("Only one Float... field was specified.");
+                }
+                Percentage = 100.0f * FloatValue / FloatMax;
+                fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
+            }
+            else
+            {
+                throw new ArgumentException("No arguments provided to indicate capacity.");
+            }
+        }
+        else
+        {
+            fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
+        }
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using display_stats.Data
+
+<table style="border: 1px solid @BorderColour; text-align: center; margin: 5px; height: max-content; @style">
+    <tr style="border-bottom: 1px solid @BorderColour; background-color: @HeadingShadingColour; width: 100%">
+        @for (int j = 0; j < TableData.ColumnsCount; j++)
+        {
+            <th style="@((j != TableData.ColumnsCount - 1) ? $"border-right: 1px solid {BorderColour}" : ""); padding: 15px;"><h4>@TableData.Headings[j]</h4></th>
+        }
+    </tr>
+    @for (int i = 0; i < TableData.RowsCount; i++)
+    {
+        <tr style="@((i != TableData.RowsCount - 1) ? $"border-bottom: 1px solid {BorderColour}" : ""); background-color: @((i % 2 == 0) ? RowColourPrimary : RowColourSecondary);">
+            @for (int j = 0; j < TableData.ColumnsCount; j++)
+            {
+                <td style="@((j != TableData.ColumnsCount - 1) ? $"border-right: 1px solid {BorderColour}" : ""); padding: 8px;"><h5>@TableData.Columns[j][i]</h5></td>
+            }
+        </tr>
+    }
+</table>
+
+@code {
+    [Parameter, EditorRequired]
+    public DisplayTableData TableData { get; set; }
+
+    [Parameter]
+    public string BorderColour { get; set; } = "black";
+    [Parameter]
+    public string HeadingShadingColour { get; set; } = "darkgrey";
+    [Parameter]
+    public string RowColourPrimary { get; set; } = "white";
+    [Parameter]
+    public string RowColourSecondary { get; set; } = "lightgrey";
+
+    [Parameter]
+    public string style { get; set; } = "";
+}

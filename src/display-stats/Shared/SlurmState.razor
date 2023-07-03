@@ -1,0 +1,17 @@
+﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
+
+<h3>SlurmState</h3>
+
+@code {
+    [Parameter, EditorRequired]
+    public ServerInfo Info { get; set; }
+
+    [Parameter, EditorRequired]
+    public SlurmServerStatus Status { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+}

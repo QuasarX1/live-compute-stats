@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject ServerStatusService serverStatusService
 
-<div style="border: 1px solid grey; border-radius: 10px; padding: 5px; background-color: lightgray; width: fit-content" onclick="@Navigate">
+<div style="border: 1px solid grey; border-radius: 10px; padding: 5px; background-color: lightgray; width: fit-content;" onclick="@Navigate">
     @if (status is null)
     {
         <h3>@if (ShowLabel){@info.DisplayName}&nbsp;<span style="color: darkorange"><span class="oi oi-circle-check" aria-hidden="true" />&nbsp;Error</span></h3>

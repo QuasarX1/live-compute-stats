@@ -1,6 +1,8 @@
 {
   "AllowedHosts": "*",
+
   "StatusPollIntervalMinutes": 0.1,
+
   "server_connections": {
     "test_1": {
       "hostname": "example1",
@@ -16,5 +18,9 @@
       "absolute_key_path": "C:\\Users\\user_a\\.ssh\\keyfile",
       "has_slurm": true
     }
+  },
+
+  "tracked_user_displaynames": {
+    "user_a": "User A"
   }
 }
