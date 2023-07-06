@@ -1,7 +1,23 @@
 ﻿@using display_stats.Data
-@inject ServerStatusService serverStatusService
 
-<h3>SlurmState</h3>
+@*<div style="display:flex; flex-direction: row; justify-content: center; align-items: center">*@
+<div style="display:flex; flex-direction: column;">
+    <div style="display:flex; flex-direction: row;">
+        <FillBar IntValue=@Status.NumberOfNodes_InUse IntMax=@Status.NumberOfNodes_Total Label=@("CPU\nUsage") Vertical=@true WarningPercentageLimit=75 DangerPercentageLimit=95 BorderRadius=5 Length=35 />
+        <div style="display:flex; flex-direction: column;">
+            <DisplayTable TableData=@JobBrakedown style="margin-top: 28px" />
+            <div style="display:flex; flex-direction: row;">
+                @for (int i = 0; i < ((Status.Jobs.Length >= 3) ? 3 : Status.Jobs.Length); i++)
+                {
+                    <SlurmJobPanel JobID=@Status.Jobs[i] Info=@Info Status=@Status />
+                }
+            </div>
+        </div>
+    </div>
+    <div style="display:flex; flex-direction: row;">
+
+    </div>
+</div>
 
 @code {
     [Parameter, EditorRequired]
@@ -10,8 +26,52 @@
     [Parameter, EditorRequired]
     public SlurmServerStatus Status { get; set; }
 
+    private DisplayTableData JobBrakedown;
+
     protected override async Task OnInitializedAsync()
     {
-        
+        JobBrakedown = new DisplayTableData();
+        JobBrakedown.AddColumn("User", Status.TrackedUsernames);
+
+        Dictionary<string, int> user_index_lookup = new Dictionary<string, int>(from i in Enumerable.Range(0, Status.TrackedUsernames.Length) select new KeyValuePair<string, int>(Status.TrackedUsernames[i], i));
+        uint[] number_queued = (from _ in Enumerable.Range(0, Status.TrackedUsernames.Length) select (uint)0).ToArray();
+        uint[] number_running = (from _ in Enumerable.Range(0, Status.TrackedUsernames.Length) select (uint)0).ToArray();
+        string[] node_info = (from _ in Enumerable.Range(0, Status.TrackedUsernames.Length) select "-").ToArray();
+
+        uint[] job_ids = Status.Jobs;
+        int user_index;
+        SlurmJobInfo job;
+        string[] nodelist;
+        foreach (uint jobid in job_ids)
+        {
+            job = Status.GetJob(jobid);
+
+            user_index = user_index_lookup[job.Username];
+
+            if (job.IsStarted)
+            {
+                ++number_running[user_index];
+            }
+            else
+            {
+                ++number_queued[user_index];
+            }
+
+            nodelist = job.NodeList;
+            if (nodelist.Length > 0)
+            {
+                if (node_info[user_index] == "-")
+                {
+                    node_info[user_index] = String.Join(", ",  nodelist);
+                }
+                else
+                {
+                    node_info[user_index] = String.Join(", ", node_info[user_index], String.Join(", ", nodelist));
+                }
+            }
+        }
+        JobBrakedown.AddColumn("Queued", (from value in number_queued select value.ToString()).ToArray());
+        JobBrakedown.AddColumn("Running", (from value in number_running select value.ToString()).ToArray());
+        JobBrakedown.AddColumn("Nodes", node_info);
     }
 }

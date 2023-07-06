@@ -25,7 +25,7 @@
     public bool ShowLabel { get; set; } = true;
 
     private ServerInfo info;
-    private ServerStatus status;
+    private ServerStatus? status;
 
     protected override async Task OnInitializedAsync()
     {

@@ -32,26 +32,26 @@ namespace display_stats.Data
                     switch (colours[i].Length)
                     {
                         case 4:
-                            colour = Color.FromArgb(System.Convert.ToInt32(colours[i][1]),
-                                                    System.Convert.ToInt32(colours[i][2]),
-                                                    System.Convert.ToInt32(colours[i][3]));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1].ToString())),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][2].ToString())),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3].ToString())));
                             break;
                         case 5:
-                            colour = Color.FromArgb(System.Convert.ToInt32(colours[i][1]),
-                                                    System.Convert.ToInt32(colours[i][2]),
-                                                    System.Convert.ToInt32(colours[i][3]),
-                                                    System.Convert.ToInt32(colours[i][4]));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1].ToString())),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][2].ToString())),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3].ToString())),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][4].ToString())));
                             break;
                         case 7:
-                            colour = Color.FromArgb(System.Convert.ToInt32(colours[i][1..3]),
-                                                    System.Convert.ToInt32(colours[i][3..5]),
-                                                    System.Convert.ToInt32(colours[i][5..7]));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])));
                             break;
                         case 9:
-                            colour = Color.FromArgb(System.Convert.ToInt32(colours[i][1..3]),
-                                                    System.Convert.ToInt32(colours[i][3..5]),
-                                                    System.Convert.ToInt32(colours[i][5..7]),
-                                                    System.Convert.ToInt32(colours[i][7..9]));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][7..9])));
                             break;
                         default:
                             throw new ArgumentException("Invalid colour format.");

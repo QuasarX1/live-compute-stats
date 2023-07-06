@@ -18,7 +18,10 @@
       "username": "user_a",
       "port": 25565,
       "absolute_key_path": "C:\\Users\\user_a\\.ssh\\keyfile",
-      "has_slurm": true
+      "has_slurm": true,
+      "queue_colours": {
+        "test-queue": "#A0B000"
+      }
     }
   },
 
