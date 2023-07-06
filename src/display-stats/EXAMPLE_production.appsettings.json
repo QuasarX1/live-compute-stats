@@ -1,7 +1,8 @@
 {
   "AllowedHosts": "*",
+  "Urls": "http://[*]:5000",
 
-  "StatusPollIntervalMinutes": 0.1,
+  "StatusPollIntervalMinutes": 5,
 
   "server_connections": {
     "test_1": {
@@ -15,6 +16,7 @@
       "hostname": "example2",
       "displayname": "Example Server 2",
       "username": "user_a",
+      "port": 25565,
       "absolute_key_path": "C:\\Users\\user_a\\.ssh\\keyfile",
       "has_slurm": true
     }

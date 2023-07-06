@@ -33,20 +33,50 @@ namespace display_stats.Data
             TrackedUsernames = (from child in configuration.GetSection("tracked_user_displaynames").GetChildren() select child.Key).ToArray();
             TrackedUserDisplayNames = (from child in configuration.GetSection("tracked_user_displaynames").GetChildren() select child.Value).ToArray();
             IConfigurationSection connection_configs = configuration.GetSection("server_connections");
+            AuthenticationMethod auth;
+            Renci.SshNet.ConnectionInfo connectionInfo;
             foreach (IConfigurationSection server_connection_config in connection_configs.GetChildren())
             {
                 servers.Add(server_connection_config.Key, new ServerInfo(server_connection_config));
 
-                server_connections.Add(server_connection_config.Key,
-                                       ((from child_item in server_connection_config.GetChildren() select child_item.Key).Contains("absolute_key_path")) ?
-                                           new PrivateKeyConnectionInfo(server_connection_config.GetValue<string>("hostname"),
-                                                                        server_connection_config.GetValue<string>("username"),
-                                                                        new PrivateKeyFile(server_connection_config.GetValue<string>("absolute_key_path")))
-                                           :
-                                           new PasswordConnectionInfo(server_connection_config.GetValue<string>("hostname"),
-                                                                      server_connection_config.GetValue<string>("username"),
-                                                                      server_connection_config.GetValue<string>("password"))
-                                       );
+                if ((from child_item in server_connection_config.GetChildren() select child_item.Key).Contains("absolute_key_path"))
+                {
+                    auth = new PrivateKeyAuthenticationMethod(server_connection_config.GetValue<string>("username"),
+                                                              new PrivateKeyFile(server_connection_config.GetValue<string>("absolute_key_path")));
+                }
+                else
+                {
+                    auth = new PasswordAuthenticationMethod(server_connection_config.GetValue<string>("username"),
+                                                            server_connection_config.GetValue<string>("password"));
+                }
+
+                if ((from child_item in server_connection_config.GetChildren() select child_item.Key).Contains("port"))
+                {
+                    connectionInfo = new Renci.SshNet.ConnectionInfo(server_connection_config.GetValue<string>("hostname"),
+                                                                     server_connection_config.GetValue<int>("port"),
+                                                                     server_connection_config.GetValue<string>("username"),
+                                                                     auth);
+                }
+                else
+                {
+                    connectionInfo = new Renci.SshNet.ConnectionInfo(server_connection_config.GetValue<string>("hostname"),
+                                                                     server_connection_config.GetValue<string>("username"),
+                                                                     auth);
+                }
+                //connectionInfo.MaxSessions = 8;
+
+                server_connections.Add(server_connection_config.Key, connectionInfo);
+
+                //server_connections.Add(server_connection_config.Key,
+                //                       ((from child_item in server_connection_config.GetChildren() select child_item.Key).Contains("absolute_key_path")) ?
+                //                           new PrivateKeyConnectionInfo(server_connection_config.GetValue<string>("hostname"),
+                //                                                        server_connection_config.GetValue<string>("username"),
+                //                                                        new PrivateKeyFile(server_connection_config.GetValue<string>("absolute_key_path")))
+                //                           :
+                //                           new PasswordConnectionInfo(server_connection_config.GetValue<string>("hostname"),
+                //                                                      server_connection_config.GetValue<string>("username"),
+                //                                                      server_connection_config.GetValue<string>("password"))
+                //                       );
             }
 
 
@@ -95,12 +125,13 @@ namespace display_stats.Data
                 try
                 {
                     SshClient client = new SshClient(server_connections[key]);
+                    //client.KeepAliveInterval = TimeSpan.FromSeconds(15);//TODO: Move to configuration
                     client.Connect();
                     new_statuses.Add(key, create_status(key, client));
                     client.Disconnect();
                     client.Dispose();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     new_statuses.Add(key, (servers[key].HasSlurm) ? SlurmServerStatus.Offline() : RegularServerStatus.Offline());
                 }

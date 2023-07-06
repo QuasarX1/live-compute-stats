@@ -11,4 +11,15 @@
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="development.appsettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+    <Content Update="production.appsettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
