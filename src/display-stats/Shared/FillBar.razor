@@ -96,7 +96,7 @@
     private string[] bar_label = new string[0];
     private string fill_label = "--%";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         bar_label = Label.Split('\n', StringSplitOptions.None);
 

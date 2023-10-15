@@ -16,7 +16,7 @@
 
     private DisplayTableData ServerUsageBrakedown;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         ServerUsageBrakedown = new DisplayTableData();
         ServerUsageBrakedown.AddColumn("User", Status.ActiveTrackedUsernames.Append("-").ToArray());

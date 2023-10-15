@@ -28,7 +28,7 @@
 
     private DisplayTableData JobBrakedown;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         JobBrakedown = new DisplayTableData();
         JobBrakedown.AddColumn("User", Status.TrackedUsernames);

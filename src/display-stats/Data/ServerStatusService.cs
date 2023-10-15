@@ -193,7 +193,11 @@ namespace display_stats.Data
                     user_top_data[username][0] /= (float)number_of_cpus;
                 }
 
-                new_status = new SlurmServerStatus(displaynames: TrackedUsernames);
+                new_status = new SlurmServerStatus(displaynames: TrackedUsernames,
+                                                   queue_colours: servers[server_key].QueueColours,
+                                                   all_nodes: 0,
+                                                   nodes_in_use: 0,
+                                                   draining_nodes: 0);
             }
             else
             {

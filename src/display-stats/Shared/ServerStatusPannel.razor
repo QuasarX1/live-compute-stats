@@ -22,7 +22,13 @@
     private ServerInfo info;
     private ServerStatus status;
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     info = serverStatusService.GetServerInfo(ServerName);
+    //     status = await serverStatusService.GetServerStatus(ServerName);
+    // }
+
+    protected override async Task OnParametersSetAsync()
     {
         info = serverStatusService.GetServerInfo(ServerName);
         status = await serverStatusService.GetServerStatus(ServerName);

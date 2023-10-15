@@ -32,26 +32,26 @@ namespace display_stats.Data
                     switch (colours[i].Length)
                     {
                         case 4:
-                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1].ToString())),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][2].ToString())),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3].ToString())));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][1]}")[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][2]}")[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][3]}")[0]));
                             break;
                         case 5:
-                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1].ToString())),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][2].ToString())),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3].ToString())),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][4].ToString())));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][1]}")[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][2]}")[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][3]}")[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString($"0{colours[i][4]}")[0]));
                             break;
                         case 7:
-                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])[0]));
                             break;
                         case 9:
-                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])),
-                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][7..9])));
+                            colour = Color.FromArgb(System.Convert.ToInt32(System.Convert.FromHexString(colours[i][1..3])[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][3..5])[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][5..7])[0]),
+                                                    System.Convert.ToInt32(System.Convert.FromHexString(colours[i][7..9])[0]));
                             break;
                         default:
                             throw new ArgumentException("Invalid colour format.");

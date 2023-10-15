@@ -19,9 +19,9 @@
         }
         public new static SlurmServerStatus Offline() { return new SlurmServerStatus(); }
 
-        public SlurmServerStatus(string[] displaynames, string[] queue_names, string[] queue_colours, uint all_nodes, uint nodes_in_use, uint draining_nodes) : base(true)
+        public SlurmServerStatus(string[] displaynames, SlurmQueueColours queue_colours, uint all_nodes, uint nodes_in_use, uint draining_nodes) : base(true)
         {
-            QueueColours = new SlurmQueueColours(queue_names, queue_colours);
+            QueueColours = queue_colours;
             TrackedUsernames = displaynames;
             NumberOfNodes_Total = all_nodes;
             NumberOfNodes_InUse = nodes_in_use;

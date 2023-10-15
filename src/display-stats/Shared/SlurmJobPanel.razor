@@ -27,7 +27,7 @@
 
     private SlurmJobInfo job;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         job = Status.GetJob(JobID);
     }
