@@ -6,9 +6,9 @@
         public string Username;
         public string JobName;
         public string QueueName;
-        public DateTime MaxTime;
+        public TimeSpan MaxTime;
         public bool IsStarted;
-        public DateTime? Elapsed;
-        public string[] NodeList;
+        public TimeSpan Elapsed;
+        public uint Nodes;
     }
 }

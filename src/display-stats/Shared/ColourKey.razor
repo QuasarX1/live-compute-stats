@@ -1,0 +1,30 @@
+﻿@using System.Drawing
+
+<div style="display:flex; flex-direction: @((Horizontal) ? "row" : "column" );">
+    @if (Title != "")
+    {
+        <h4>@Title</h4>
+    }
+    @for (int i = 0; i < Labels.Length; i++)
+    {
+        <div style="align-items: centre; display: flex; flex-direction: row; margin-@((Horizontal) ? "left: 2em" : "bottom: 1px" )">
+            <div style="width: 1.5em; height: 1.5em; margin-right: 5px; background-color: @String.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", Colours[i].R, Colours[i].G, Colours[i].B, Colours[i].A)" />
+            <h5>@Labels[i]</h5>
+            
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public bool Horizontal { get; set; } = false;
+
+    [Parameter, EditorRequired]
+    public string[] Labels { get; set; }
+
+    [Parameter, EditorRequired]
+    public Color[] Colours { get; set; }
+}

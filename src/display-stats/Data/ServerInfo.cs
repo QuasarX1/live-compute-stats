@@ -11,7 +11,6 @@
         {
             Name = details.Key;
             DisplayName = details.GetValue<string>("displayname");
-            //DisplayName = details.GetValue<string>("displayname");
             HasSlurm = details.GetValue<bool>("has_slurm");
 
             if (HasSlurm)

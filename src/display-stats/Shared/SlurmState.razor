@@ -1,21 +1,22 @@
 ﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
 
-@*<div style="display:flex; flex-direction: row; justify-content: center; align-items: center">*@
 <div style="display:flex; flex-direction: column;">
     <div style="display:flex; flex-direction: row;">
-        <FillBar IntValue=@Status.NumberOfNodes_InUse IntMax=@Status.NumberOfNodes_Total Label=@("CPU\nUsage") Vertical=@true WarningPercentageLimit=75 DangerPercentageLimit=95 BorderRadius=5 Length=35 />
-        <div style="display:flex; flex-direction: column;">
+        <FillBar IntValue=@Status.NumberOfNodes_InUse IntMax=@Status.NumberOfNodes_Total Label=@("Running\nNodes") Vertical=@true WarningPercentageLimit=75 DangerPercentageLimit=95 BorderRadius=5 Length=35 />
+        <div style="display:flex; flex-direction: column; margin-right: 5px">
             <DisplayTable TableData=@JobBrakedown style="margin-top: 28px" />
-            <div style="display:flex; flex-direction: row;">
-                @for (int i = 0; i < ((Status.Jobs.Length >= 3) ? 3 : Status.Jobs.Length); i++)
-                {
-                    <SlurmJobPanel JobID=@Status.Jobs[i] Info=@Info Status=@Status />
-                }
-            </div>
+            @for (int row = 0; row < MAX_ROWS; row++)
+            {
+                <div style="display:flex; flex-direction: row;">
+                    @for (int column = 0; column < ((SortedJobIDs.Length >= MAX_COLS * (row + 1)) ? MAX_COLS : SortedJobIDs.Length - (MAX_COLS * row)); column++)
+                    {
+                        <SlurmJobPanel JobID=@SortedJobIDs[row * MAX_COLS + column] Info=@Info Status=@Status />
+                    }
+                </div>
+            }
         </div>
-    </div>
-    <div style="display:flex; flex-direction: row;">
-
+        <ColourKey Title="Queues:" Horizontal=@false Labels=Info.QueueColours.QueueNames Colours=@((from string name in Info.QueueColours.QueueNames select Info.QueueColours.GetColour(name)).ToArray()) />
     </div>
 </div>
 
@@ -26,12 +27,16 @@
     [Parameter, EditorRequired]
     public SlurmServerStatus Status { get; set; }
 
+    private const int MAX_ROWS = 2;
+    private const int MAX_COLS = 5;
+
     private DisplayTableData JobBrakedown;
+    private uint[] SortedJobIDs;
 
     protected override async Task OnParametersSetAsync()
     {
         JobBrakedown = new DisplayTableData();
-        JobBrakedown.AddColumn("User", Status.TrackedUsernames);
+        JobBrakedown.AddColumn("User", (from string username in Status.TrackedUsernames select serverStatusService.TrackedUserDisplayNames[username]).ToArray());
 
         Dictionary<string, int> user_index_lookup = new Dictionary<string, int>(from i in Enumerable.Range(0, Status.TrackedUsernames.Length) select new KeyValuePair<string, int>(Status.TrackedUsernames[i], i));
         uint[] number_queued = (from _ in Enumerable.Range(0, Status.TrackedUsernames.Length) select (uint)0).ToArray();
@@ -41,7 +46,6 @@
         uint[] job_ids = Status.Jobs;
         int user_index;
         SlurmJobInfo job;
-        string[] nodelist;
         foreach (uint jobid in job_ids)
         {
             job = Status.GetJob(jobid);
@@ -57,21 +61,18 @@
                 ++number_queued[user_index];
             }
 
-            nodelist = job.NodeList;
-            if (nodelist.Length > 0)
+            if (job.Nodes > 0)
             {
-                if (node_info[user_index] == "-")
-                {
-                    node_info[user_index] = String.Join(", ",  nodelist);
-                }
-                else
-                {
-                    node_info[user_index] = String.Join(", ", node_info[user_index], String.Join(", ", nodelist));
-                }
+                node_info[user_index] = job.Nodes.ToString();
             }
         }
         JobBrakedown.AddColumn("Queued", (from value in number_queued select value.ToString()).ToArray());
         JobBrakedown.AddColumn("Running", (from value in number_running select value.ToString()).ToArray());
         JobBrakedown.AddColumn("Nodes", node_info);
+
+        SortedJobIDs = new uint[job_ids.Length];
+        Array.Copy(job_ids, SortedJobIDs, job_ids.Length);
+        double[] sortedJobTimeRemaining = (from id in SortedJobIDs select (Status.GetJob(id).MaxTime - Status.GetJob(id).Elapsed).TotalSeconds).ToArray();
+        Array.Sort(sortedJobTimeRemaining, SortedJobIDs);
     }
 }

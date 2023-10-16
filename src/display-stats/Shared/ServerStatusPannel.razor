@@ -1,7 +1,7 @@
 ﻿@using display_stats.Data
 @inject ServerStatusService serverStatusService
 
-<div style="display:flex; flex-direction: row;"><h1 style="margin-right: 1em">@info.DisplayName</h1><ServerOnlineStatus ServerName=@ServerName ShowLabel=@false /></div>
+<div style="display:flex; flex-direction: row;"><ServerOnlineStatus ServerName=@ServerName ShowLabel=@false /><h1 style="margin-left: 1em">@info.DisplayName</h1></div>
 
 @if (status is not null && status.IsOnline)
 {

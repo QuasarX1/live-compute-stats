@@ -1,18 +1,20 @@
 ﻿@using System.Drawing
 @using display_stats.Data
+@implements IDisposable
+@inject ServerStatusService serverStatusService
 
-<div stype="border: 1px solid black; border-radius: 5px; background-color: @Status.QueueColours.GetColour(job.QueueName)">
-    <h3>@job.Username @job.JobID</h3>
-    <p>@job.QueueName</p>
+<div style="border: 1px solid black; border-radius: 5px; padding: 5px; margin: 5px; background-color: @String.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", colour.R, colour.G, colour.B, colour.A); text-align: center; width: 12em">
+    <h4>@job.JobName</h4>
+    <h5>@serverStatusService.TrackedUserDisplayNames[job.Username] @job.JobID</h5>
     @if (job.IsStarted)
     {
-        <p>@job.Elapsed.ToString()</p>
+        <p>@DisplayTime(job.Elapsed + (DateTime.Now - Status.UpdateTimestamp))</p>
     }
     else
     {
         <p>-</p>
     }
-    <p>(@job.MaxTime.ToString())</p>
+    <p>(@DisplayTime(job.MaxTime))</p>
 </div>
 
 @code {
@@ -26,10 +28,45 @@
     public SlurmServerStatus Status { get; set; }
 
     private SlurmJobInfo job;
+    private Color colour => Status.QueueColours.GetColour(job.QueueName);
+    private System.Threading.Timer update_timer;
+
+    protected override void OnInitialized()
+    {
+        // Update the page every second (so that timers count up)
+        update_timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+        },
+        null,
+        0,
+        1000);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         job = Status.GetJob(JobID);
     }
-    
+
+    public void Dispose()
+    {
+        update_timer?.Dispose();
+    }
+
+    private string DisplayTime(TimeSpan dt)
+    {
+        if (dt.Days > 0)
+        {
+            return dt.ToString("d\\-hh\\:mm\\:ss");
+        }
+        else if (dt.Hours > 0)
+        {
+            return dt.ToString("h\\:mm\\:ss");
+        }
+        else
+        {
+            return dt.ToString("m\\:ss");
+        }
+    }
+
 }
