@@ -10,8 +10,7 @@ else
     install_location="./"
 fi
 install_location_argument="-o \"$install_location\""
-#echo "$install_location_argument"
-#exit
+
 dotnet publish "$script_folder/src/src.sln" -c Release --no-self-contained $install_location_argument
 echo "Installed at \"$(readlink -f "$install_location")\""
 
