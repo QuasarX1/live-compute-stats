@@ -10,7 +10,8 @@ fi
 install_location_argument="-o \"$install_location\""
 
 dotnet publish "$script_folder/src/src.sln" -c Release --no-self-contained $install_location
-cp "$script_folder/TEMPLATE_run.sh"
+cp "$script_folder/TEMPLATE_run.sh" "$install_location/run.sh"
+chmod +x "$install_location/run.sh"
 
 echo "$(cat ~/.bashrc)
 
