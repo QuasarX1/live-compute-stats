@@ -17,6 +17,9 @@ echo "Installed at \"$(readlink -f "$install_location")\""
 cp "$script_folder/TEMPLATE_run.sh" "$install_location/run.sh"
 chmod +x "$install_location/run.sh"
 
+cp "$script_folder/TEMPLATE_update.sh" "$install_location/update.sh"
+chmod +x "$install_location/update.sh"
+
 if [ $(cat ~/.bashrc | grep "alias server-stats" | wc -l) -eq 0 ]; then
     echo "$(cat ~/.bashrc)
 
