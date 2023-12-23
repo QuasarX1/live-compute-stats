@@ -55,13 +55,12 @@
             if (job.IsStarted)
             {
                 ++number_running[user_index];
+                node_count[user_index] += job.Nodes;
             }
             else
             {
                 ++number_queued[user_index];
             }
-
-            node_count[user_index] += job.Nodes;
         }
         JobBrakedown.AddColumn("Queued", (from value in number_queued select value.ToString()).ToArray());
         JobBrakedown.AddColumn("Running", (from value in number_running select value.ToString()).ToArray());
