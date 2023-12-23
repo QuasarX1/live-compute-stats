@@ -1,7 +1,11 @@
-﻿<div style="width: max-content; height: max-content; padding: 5px; @style">
-    <p style="margin: 0px; text-align: center">@fill_label</p>
-    <div style="height: @((Vertical) ? Length : Width)em;
-                width: @((Vertical) ? Width : Length)em;
+﻿@if (update_attributes) { UpdateAttributes(); }
+<div style="width: @((!Vertical && FillLength || Vertical && FillWidth) ? "100%" : "max-content"); height: @((Vertical && FillLength || !Vertical && FillWidth) ? "100%" : "max-content"); padding: @((!PaddingOnMaxFill && (Vertical && FillLength || !Vertical && FillWidth)) ? "0" : "5")px @((!PaddingOnMaxFill && (!Vertical && FillLength || Vertical && FillWidth)) ? "0" : "5")px @((!PaddingOnMaxFill && (Vertical && FillLength || !Vertical && FillWidth)) ? "0" : "5")px @((!PaddingOnMaxFill && (!Vertical && FillLength || Vertical && FillWidth)) ? "0" : "5")px; @style">
+@if (!HideFillState)
+    {
+        <p style="margin: 0px; text-align: center">@fill_label</p>
+    }
+    <div style="height: @((Vertical) ? ((FillLength) ? "100%" : $"{Length}em") : ((FillWidth) ? "100%" : $"{Width}em"));
+                width: @((Vertical) ? ((FillWidth) ? "100%" : $"{Width}em") : ((FillLength) ? "100%" : $"{Length}em"));
                 background-color: @BackgroundColour;
                 padding: 0px;
                 border-radius: @(BorderRadius)px;
@@ -53,10 +57,20 @@
     [Parameter]
     public int Width { get; set; } = 5;
     /// <summary>
+    /// Ignore Width and fill the avalible space.
+    /// </summary>
+    [Parameter]
+    public bool FillWidth { get; set; } = false;
+    /// <summary>
     /// In em.
     /// </summary>
     [Parameter]
     public int Length { get; set; } = 20;
+    /// <summary>
+    /// Ignore Length and fill the avalible space.
+    /// </summary>
+    [Parameter]
+    public bool FillLength { get; set; } = false;
     [Parameter]
     public int WarningPercentageLimit { get; set; } = 101;
     [Parameter]
@@ -72,62 +86,143 @@
     [Parameter]
     public int BorderRadius { get; set; } = 0;
 
+    /// <summary>
+    /// Retain relivant dimension's padding when FillWidth or FillHeight are set.
+    /// </summary>
     [Parameter]
-    public string Label { get; set; } = "";
+    public bool PaddingOnMaxFill { get; set; } = true;
 
     [Parameter]
-    public float? Percentage { get; set; } = null;
+    public string Label { get { return _Label; } set { _Label = value; update_attributes = true; } }
+    private string _Label = "";
 
     [Parameter]
-    public uint? IntMax { get; set; } = null;
+    public bool HideFillState { get; set; } = false;
 
     [Parameter]
-    public uint? IntValue { get; set; } = null;
+    public float? Percentage { get { return _Percentage; } set { _Percentage = value; update_attributes = true; } }
+    private float? _Percentage = null;
 
     [Parameter]
-    public float? FloatMax { get; set; } = null;
+    public uint? IntMax { get { return _IntMax; } set { _IntMax = value; update_attributes = true; } }
+    private uint? _IntMax = null;
 
     [Parameter]
-    public float? FloatValue { get; set; } = null;
+    public uint? IntValue { get { return _IntValue; } set { _IntValue = value; update_attributes = true; } }
+    private uint? _IntValue = null;
 
     [Parameter]
-    public uint DecimalPrecision { get; set; } = 2;
+    public float? FloatMax { get { return _FloatMax; } set { _FloatMax = value; update_attributes = true; } }
+    private float? _FloatMax = null;
+
+    [Parameter]
+    public float? FloatValue { get { return _FloatValue; } set { _FloatValue = value; update_attributes = true; } }
+    private float? _FloatValue = null;
+
+    [Parameter]
+    public uint DecimalPrecision { get { return _DecimalPrecision; } set { _DecimalPrecision = value; update_attributes = true; } }
+    private uint _DecimalPrecision = 2;
 
     private string[] bar_label = new string[0];
     private string fill_label = "--%";
+    private bool update_attributes = true;
 
-    protected override async Task OnParametersSetAsync()
+    private void UpdateAttributes()
     {
         bar_label = Label.Split('\n', StringSplitOptions.None);
 
-        if (Percentage is null)
+        if (IntValue is not null)
         {
-            if (IntValue is not null)
+            if (IntMax is null)
             {
-                if (IntMax is null)
-                {
-                    throw new ArgumentException("Only one Int... field was specified.");
-                }
-                Percentage = 100.0f * (float)IntValue / (float)IntMax;
-                fill_label = $"{IntValue}/{IntMax}";
+                throw new ArgumentException("Only one Int... field was specified.");
             }
-            else if (FloatValue is not null)
-            {
-                if (FloatMax is null)
-                {
-                    throw new ArgumentException("Only one Float... field was specified.");
-                }
-                Percentage = 100.0f * FloatValue / FloatMax;
-                fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
-            }
-            else
-            {
-                throw new ArgumentException("No arguments provided to indicate capacity.");
-            }
+            Percentage = 100.0f * (float)IntValue / (float)IntMax;
+            fill_label = $"{IntValue}/{IntMax}";
         }
-        else
+        else if (FloatValue is not null)
+        {
+            if (FloatMax is null)
+            {
+                throw new ArgumentException("Only one Float... field was specified.");
+            }
+            Percentage = 100.0f * FloatValue / FloatMax;
+            fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
+        }
+        else if (Percentage is not null)
         {
             fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
         }
+        else
+        {
+            throw new ArgumentException("No arguments provided to indicate capacity.");
+        }
+
+        //if (Percentage is null)
+        //{
+        //    if (IntValue is not null)
+        //    {
+        //        if (IntMax is null)
+        //        {
+        //            throw new ArgumentException("Only one Int... field was specified.");
+        //        }
+        //        Percentage = 100.0f * (float)IntValue / (float)IntMax;
+        //        fill_label = $"{IntValue}/{IntMax}";
+        //    }
+        //    else if (FloatValue is not null)
+        //    {
+        //        if (FloatMax is null)
+        //        {
+        //            throw new ArgumentException("Only one Float... field was specified.");
+        //        }
+        //        Percentage = 100.0f * FloatValue / FloatMax;
+        //        fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException("No arguments provided to indicate capacity.");
+        //    }
+        //}
+        //else
+        //{
+        //    fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
+        //}
+
+        update_attributes = false;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //bar_label = Label.Split('\n', StringSplitOptions.None);
+
+        //if (Percentage is null)
+        //{
+        //    if (IntValue is not null)
+        //    {
+        //        if (IntMax is null)
+        //        {
+        //            throw new ArgumentException("Only one Int... field was specified.");
+        //        }
+        //        Percentage = 100.0f * (float)IntValue / (float)IntMax;
+        //        fill_label = $"{IntValue}/{IntMax}";
+        //    }
+        //    else if (FloatValue is not null)
+        //    {
+        //        if (FloatMax is null)
+        //        {
+        //            throw new ArgumentException("Only one Float... field was specified.");
+        //        }
+        //        Percentage = 100.0f * FloatValue / FloatMax;
+        //        fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException("No arguments provided to indicate capacity.");
+        //    }
+        //}
+        //else
+        //{
+        //    fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
+        //}
     }
 }

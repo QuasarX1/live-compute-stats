@@ -5,21 +5,49 @@
 
 <PageTitle>Status</PageTitle>
 
-@foreach (string server in serverStatusService.ServerNames)
-{
-    <ServerStatusPannel ServerName=@server />
-}
+<FillBar FloatValue="(float)(DateTime.Now - update_display_time).TotalSeconds" FloatMax="(float)update_seconds" Width="1" FillLength="true" BorderRadius="12" HideFillState="true" PaddingOnMaxFill="false" />
+
+<ServerOnlineStatus ServerName="@serverStatusService.ServerNames[server_index]" />
 
 @code {
-    private DisplayTableData test;
+    private uint update_seconds;
+    private Timer caroucell_timer;
+    private DateTime update_display_time;
+
+    private uint bar_update_milliseconds = 40;
+    private Timer bar_timer;
+
+    int server_index = -1;
+    private ServerOnlineStatus displayed_panel;
 
     protected override async Task OnInitializedAsync()
     {
-        
+
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        update_seconds = Configuration.GetValue<uint>("CaroucellChangeIntervalSeconds");
+        update();
+    }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            caroucell_timer = new Timer(new TimerCallback((object? state) => { update(); InvokeAsync(StateHasChanged); }), null, update_seconds * 1000, update_seconds * 1000);
+            bar_timer = new Timer(new TimerCallback((object? state) => { InvokeAsync(StateHasChanged); }), null, bar_update_milliseconds, bar_update_milliseconds);
+        }
+    }
+
+    protected void update()
+    {
+        // Record time
+        update_display_time = DateTime.Now;
+
+        // Increment index and load server
+        server_index = (server_index + 1) % serverStatusService.ServerNames.Length;
+        displayed_panel = new ServerOnlineStatus();
+        displayed_panel.ServerName = serverStatusService.ServerNames[server_index];
     }
 }

@@ -1,8 +1,9 @@
 {
   "AllowedHosts": "*",
-  "Urls": "http://[*]:5000",
+  "Urls": [ "http://[*]:5000", "https://[*]:7150" ],
 
   "StatusPollIntervalMinutes": 5,
+  "CaroucellChangeIntervalSeconds": 10,
 
   "server_connections": {
     "test_1": {
