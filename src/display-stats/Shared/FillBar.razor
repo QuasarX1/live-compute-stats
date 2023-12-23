@@ -158,71 +158,11 @@
             throw new ArgumentException("No arguments provided to indicate capacity.");
         }
 
-        //if (Percentage is null)
-        //{
-        //    if (IntValue is not null)
-        //    {
-        //        if (IntMax is null)
-        //        {
-        //            throw new ArgumentException("Only one Int... field was specified.");
-        //        }
-        //        Percentage = 100.0f * (float)IntValue / (float)IntMax;
-        //        fill_label = $"{IntValue}/{IntMax}";
-        //    }
-        //    else if (FloatValue is not null)
-        //    {
-        //        if (FloatMax is null)
-        //        {
-        //            throw new ArgumentException("Only one Float... field was specified.");
-        //        }
-        //        Percentage = 100.0f * FloatValue / FloatMax;
-        //        fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException("No arguments provided to indicate capacity.");
-        //    }
-        //}
-        //else
-        //{
-        //    fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
-        //}
-
         update_attributes = false;
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        //bar_label = Label.Split('\n', StringSplitOptions.None);
-
-        //if (Percentage is null)
-        //{
-        //    if (IntValue is not null)
-        //    {
-        //        if (IntMax is null)
-        //        {
-        //            throw new ArgumentException("Only one Int... field was specified.");
-        //        }
-        //        Percentage = 100.0f * (float)IntValue / (float)IntMax;
-        //        fill_label = $"{IntValue}/{IntMax}";
-        //    }
-        //    else if (FloatValue is not null)
-        //    {
-        //        if (FloatMax is null)
-        //        {
-        //            throw new ArgumentException("Only one Float... field was specified.");
-        //        }
-        //        Percentage = 100.0f * FloatValue / FloatMax;
-        //        fill_label = $"{FloatValue.Value.ToString($"n{DecimalPrecision}")}/{FloatMax.Value.ToString($"n{DecimalPrecision}")}";
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException("No arguments provided to indicate capacity.");
-        //    }
-        //}
-        //else
-        //{
-        //    fill_label = $"{Percentage.Value.ToString($"n{DecimalPrecision}")}%";
-        //}
+        
     }
 }
