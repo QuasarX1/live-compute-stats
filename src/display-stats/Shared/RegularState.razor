@@ -1,4 +1,5 @@
 ﻿@using display_stats.Data
+@inject ServerStatusService serverStatusService
 
 @*<div style="display:flex; flex-direction: row; justify-content: center; align-items: center">*@
 <div style="display:flex; flex-direction: row;">
@@ -19,7 +20,8 @@
     protected override async Task OnParametersSetAsync()
     {
         ServerUsageBrakedown = new DisplayTableData();
-        ServerUsageBrakedown.AddColumn("User", Status.ActiveTrackedUsernames.Append("-").ToArray());
+//        ServerUsageBrakedown.AddColumn("User", Status.ActiveTrackedUsernames.Append("-").ToArray());
+        ServerUsageBrakedown.AddColumn("User", (from string username in Status.ActiveTrackedUsernames select serverStatusService.TrackedUserDisplayNames[username]).Append("-").ToArray());
         ServerUsageBrakedown.AddColumn("CPU %", (from value in Status.UserCPU select value.ToString("n2")).Append((Status.TotalCPU - (from value in Status.UserCPU select value).Sum()).ToString("n2")).ToArray());
         ServerUsageBrakedown.AddColumn("Memory %", (from value in Status.UserMemory select value.ToString("n2")).Append((Status.TotalMemory - (from value in Status.UserMemory select value).Sum()).ToString("n2")).ToArray());
     }
