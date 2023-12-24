@@ -47,7 +47,8 @@ namespace display_stats
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //TODO: consider configuring for https
+            //app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 

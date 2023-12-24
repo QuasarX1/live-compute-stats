@@ -7,7 +7,7 @@
 
 <FillBar FloatValue="(float)(DateTime.Now - update_display_time).TotalSeconds" FloatMax="(float)update_seconds" Width="1" FillLength="true" BorderRadius="12" HideFillState="true" PaddingOnMaxFill="false" />
 
-<ServerOnlineStatus ServerName="@serverStatusService.ServerNames[server_index]" />
+<ServerStatusPannel ServerName="@serverStatusService.ServerNames[server_index]" />
 
 @code {
     private uint update_seconds;

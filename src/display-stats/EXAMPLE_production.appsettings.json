@@ -1,6 +1,13 @@
 {
   "AllowedHosts": "*",
-  "Urls": [ "http://[*]:5000", "https://[*]:7150" ],
+  "Urls": [ "http://[*]:5000" ],
+  "Kestrel": {
+    "EndPoints": {
+      "Http": {
+        "Url": "http://[*]:5000"
+      }
+    }
+  },
 
   "StatusPollIntervalMinutes": 5,
   "CaroucellChangeIntervalSeconds": 10,
