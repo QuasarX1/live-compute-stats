@@ -178,7 +178,7 @@ namespace display_stats.Data
                 command__n_nodes.Dispose();
                 uint number_of_nodes = System.Convert.ToUInt32(command_result);
 
-                SshCommand command__squeue = client.CreateCommand("squeue --noheader --Format=\"JobID,UserName,Name,Partition,TimeLimit,State,TimeUsed,NumNodes\"|awk '{print $1\"|\"$2\"|\"$3\"|\"$4\"|\"$5\"|\"$6\"|\"$7\"|\"$8}'");
+                SshCommand command__squeue = client.CreateCommand("squeue --noheader --Format=\"JobID:10,UserName:100,Name:100,Partition:20,TimeLimit,State:100,TimeUsed,NumNodes\"|awk '{print $1\"|\"$2\"|\"$3\"|\"$4\"|\"$5\"|\"$6\"|\"$7\"|\"$8}'");
                 command_result = command__squeue.Execute();
                 jobs_timestamp = DateTime.Now;
                 command__squeue.Dispose();
